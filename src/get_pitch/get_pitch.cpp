@@ -39,6 +39,10 @@ int main(int argc, const char *argv[]) {
 	/// \TODO 
 	///  Modify the program syntax and the call to **docopt()** in order to
 	///  add options and arguments to the program.
+
+  /**
+   \DONE :the user 
+  */
     std::map<std::string, docopt::value> args = docopt::docopt(USAGE,
         {argv + 1, argv + argc},	// array of arguments, without the program name
         true,    // show help if requested
@@ -46,6 +50,17 @@ int main(int argc, const char *argv[]) {
 
 	std::string input_wav = args["<input-wav>"].asString();
 	std::string output_txt = args["<output-txt>"].asString();
+
+  //float th_rmaxnorm=stof(args["--th_rmaxnorm"].asString());
+  float th_rmaxnorm=0.7;
+  
+  //float llindarPos=stof(args["--llindarPos"].asString());
+  //float llindarNeg=stof(args["--llindarNeg"].asString());
+  //float th_r1norm=stof(args["--th_r1norm"].asString());
+  float th_r1norm=0.7;
+
+  //float th_pot=stof(args["--th_pot"].asString());
+  float th_pot=-43.5;
 
   // Read input sound file
   unsigned int rate;
