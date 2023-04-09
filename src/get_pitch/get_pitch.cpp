@@ -25,10 +25,10 @@ Usage:
     get_pitch --version
 
 Options:
-    -m FLOAT, --umaxnorm=FLOAT  umbral de la autocorrelación a largo plazo [default: 0.5]
+    -m FLOAT, --th_rmaxnorm=FLOAT  umbral de la autocorrelación a largo plazo [default: 0.4]
     -p FLOAT, --llindarPos=FLOAT  umbral positivo central clipping [default: 0.01]
     -n FLOAT, --llindarNeg=FLOAT  umbral negativo central clipping [default: -0.01]
-    -u FLOAT, --llindarUnvoiced=FLOAT  umbral unvoiced [default: 0.05]
+    -u FLOAT, --th_r1norm=FLOAT  umbral unvoiced [default: 0.7]
     -w FLOAT, --th_pot=FLOAT  umbral potencia [default: -43.5]
     -h, --help  Show this screen
     --version   Show the version of the project
@@ -89,6 +89,7 @@ int main(int argc, const char *argv[]) {
   /**
    \DONE central-clipping implemented
   */
+
  for(unsigned int k=0; k<x.size();k++){
     if(x[k]>0){
       x[k]=x[k]-llindarPos;
@@ -102,17 +103,6 @@ int main(int argc, const char *argv[]) {
       }
     }
   }
-
-
-
-
-
-
-
-
-
-
-
 
   // Iterate for each frame and save values in f0 vector
   vector<float>::iterator iX;
