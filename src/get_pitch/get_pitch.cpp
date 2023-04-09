@@ -25,6 +25,11 @@ Usage:
     get_pitch --version
 
 Options:
+    -m FLOAT, --umaxnorm=FLOAT  umbral de la autocorrelación a largo plazo [default: 0.5]
+    -p FLOAT, --llindarPos=FLOAT  umbral positivo central clipping [default: 0.01]
+    -n FLOAT, --llindarNeg=FLOAT  umbral negativo central clipping [default: -0.01]
+    -u FLOAT, --llindarUnvoiced=FLOAT  umbral unvoiced [default: 0.05]
+    -w FLOAT, --th_pot=FLOAT  umbral potencia [default: -43.5]
     -h, --help  Show this screen
     --version   Show the version of the project
 
@@ -50,17 +55,17 @@ int main(int argc, const char *argv[]) {
 
 	std::string input_wav = args["<input-wav>"].asString();
 	std::string output_txt = args["<output-txt>"].asString();
+  float llindarPos=stof(args["--llindarPos"].asString());
+  float llindarNeg=stof(args["--llindarNeg"].asString());
 
-  //float th_rmaxnorm=stof(args["--th_rmaxnorm"].asString());
-  float th_rmaxnorm=0.7;
+  float th_rmaxnorm=stof(args["--th_rmaxnorm"].asString());
+  //float th_rmaxnorm=0.7;
   
-  //float llindarPos=stof(args["--llindarPos"].asString());
-  //float llindarNeg=stof(args["--llindarNeg"].asString());
-  //float th_r1norm=stof(args["--th_r1norm"].asString());
-  float th_r1norm=0.7;
+  float th_r1norm=stof(args["--th_r1norm"].asString());
+  //float th_r1norm=0.7;
 
-  //float th_pot=stof(args["--th_pot"].asString());
-  float th_pot=-43.5;
+  float th_pot=stof(args["--th_pot"].asString());
+  //float th_pot=-43.5;
 
   // Read input sound file
   unsigned int rate;
@@ -74,12 +79,41 @@ int main(int argc, const char *argv[]) {
   int n_shift = rate * FRAME_SHIFT;
 
   // Define analyzer
-  PitchAnalyzer analyzer(n_len, rate, PitchAnalyzer::RECT, 50, 500);
+  PitchAnalyzer analyzer(n_len, rate, th_rmaxnorm, th_r1norm, th_pot,  PitchAnalyzer::RECT, 50, 500);
 
   /// \TODO
   /// Preprocess the input signal in order to ease pitch estimation. For instance,
   /// central-clipping or low pass filtering may be used.
   
+
+  /**
+   \DONE central-clipping implemented
+  */
+ for(unsigned int k=0; k<x.size();k++){
+    if(x[k]>0){
+      x[k]=x[k]-llindarPos;
+      if(x[k]<0){
+        x[k]=0;
+      }
+    } else {
+      x[k]=x[k]-llindarNeg;
+      if(x[k]>0){
+        x[k]=0;
+      }
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
   // Iterate for each frame and save values in f0 vector
   vector<float>::iterator iX;
   vector<float> f0;

@@ -61,13 +61,10 @@ namespace upc {
     /// \TODO Implement a rule to decide whether the sound is voiced or not.
     /// * You can use the standard features (pot, r1norm, rmaxnorm),
     ///   or compute and use other ones.
-    float th_rmaxnorm=0.5;
-  
-  
-  float th_r1norm=0.5;
 
-  
-  float th_pot=-43.5;
+    //float th_rmaxnorm=0.5;
+    //float th_r1norm=0.5;
+    //float th_pot=-43.5;
 
     /**
     \DONE :the script "find_thresolds" will find the optimal values
