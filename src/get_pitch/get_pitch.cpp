@@ -116,19 +116,19 @@ int main(int argc, const char *argv[]) {
   /// Postprocess the estimation in order to supress errors. For instance, a median filter
   /// or time-warping may be used.
 
-vector<float> fMediana;
-  vector<float> f0_;
-  f0_.push_back(f0[0]);
-  for (unsigned int l=1; l<f0.size()-1; l++){
-
-    for(int r=-1; r<2; r++){
-      fMediana.push_back(f0[l+r]);
+vector<float> vect_Med;     // se declara un vector vacío de tipo float llamado fMediana
+vector<float> vect_f0;          // se declara un vector vacío de tipo float llamado  vect_f0
+vect_f0.push_back(f0[0]);       // se agrega el primer elemento del vector f0 al vector  vect_f0
+for (unsigned int l=1; l<f0.size()-1; l++){   // se itera desde el segundo elemento de f0 hasta el penúltimo elemento de f0
+    for(int r=-1; r<2; r++){    // se itera sobre los vecinos del elemento actual de f0
+      vect_Med.push_back(f0[l+r]);   // se agrega el elemento actual de f0 y sus vecinos al vector fMediana
     }
-    sort(fMediana.begin(),fMediana.end());
-    f0_.push_back(fMediana[1]);
-    fMediana.clear();
+    sort(vect_Med.begin(),vect_Med.end());   // se ordena el vector fMediana en orden ascendente
+    vect_f0.push_back(vect_Med[1]);    // se agrega el elemento central del vector fMediana al vector  vect_f0 como la mediana de los tres elementos
+    vect_Med.clear();    // se borran los elementos de fMediana para la siguiente iteración
   }
-   f0_.push_back(f0[f0.size()-1]);
+vect_f0.push_back(f0[f0.size()-1]);  // se agrega el último elemento de f0 al vector  vect_f0
+
 
 
 
@@ -140,7 +140,7 @@ vector<float> fMediana;
   }
 
   os << 0 << '\n'; //pitch at t=0
-  for (iX = f0.begin(); iX != f0.end(); ++iX) 
+  for (iX = vect_f0.begin(); iX != vect_f0.end(); ++iX) 
     os << *iX << '\n';
   os << 0 << '\n';//pitch at t=Dur
 
