@@ -146,3 +146,7 @@ vect_f0.push_back(f0[f0.size()-1]);  // se agrega el último elemento de f0 al v
 
   return 0;
 }
+
+
+
+//casa
