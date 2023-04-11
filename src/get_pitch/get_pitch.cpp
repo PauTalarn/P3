@@ -79,7 +79,7 @@ int main(int argc, const char *argv[]) {
   int n_shift = rate * FRAME_SHIFT;
 
   // Define analyzer
-  PitchAnalyzer analyzer(n_len, rate, th_rmaxnorm, th_r1norm, th_pot,  PitchAnalyzer::RECT, 50, 500);
+  PitchAnalyzer analyzer(n_len, rate, th_rmaxnorm, th_r1norm, th_pot,  PitchAnalyzer::HAMMING, 50, 500);
 
   /// \TODO
   /// Preprocess the input signal in order to ease pitch estimation. For instance,
@@ -115,6 +115,22 @@ int main(int argc, const char *argv[]) {
   /// \TODO
   /// Postprocess the estimation in order to supress errors. For instance, a median filter
   /// or time-warping may be used.
+
+vector<float> fMediana;
+  vector<float> f0_;
+  f0_.push_back(f0[0]);
+  for (unsigned int l=1; l<f0.size()-1; l++){
+
+    for(int r=-1; r<2; r++){
+      fMediana.push_back(f0[l+r]);
+    }
+    sort(fMediana.begin(),fMediana.end());
+    f0_.push_back(fMediana[1]);
+    fMediana.clear();
+  }
+   f0_.push_back(f0[f0.size()-1]);
+
+
 
   // Write f0 contour into the output file
   ofstream os(output_txt);

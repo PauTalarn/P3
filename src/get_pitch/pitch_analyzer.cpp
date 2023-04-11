@@ -70,7 +70,7 @@ namespace upc {
     //float th_pot=-43.5;
 
     /**
-    \DONE :the script "find_thresolds" will find the optimal values
+    \DONE
     */
     if(rmaxnorm>th_rmaxnorm && r1norm>th_r1norm && pot>th_pot){
       return false;
