@@ -28,8 +28,8 @@ Options:
     -m FLOAT, --th_rmaxnorm=FLOAT  umbral de la autocorrelación a largo plazo [default: 0.4]
     -p FLOAT, --llindarPos=FLOAT  umbral positivo central clipping [default: 0.01]
     -n FLOAT, --llindarNeg=FLOAT  umbral negativo central clipping [default: -0.01]
-    -u FLOAT, --th_r1norm=FLOAT  umbral unvoiced [default: 0.7]
-    -w FLOAT, --th_pot=FLOAT  umbral potencia [default: -43.5]
+    -u FLOAT, --th_r1norm=FLOAT  umbral unvoiced [default: 0.9]
+    -w FLOAT, --th_pot=FLOAT  umbral potencia [default: -80.5]
     -h, --help  Show this screen
     --version   Show the version of the project
 
