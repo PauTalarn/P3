@@ -12,7 +12,7 @@ fs = 20000;
 t = ((0:length(data)-1)/fs)*1000;
 
 % Senyal temporal
-subplot(3,1,1);
+subplot(2,1,1);
 plot(t, data);
 xlabel('Temps (ms)');
 ylabel('Amplitud');
@@ -22,19 +22,17 @@ title('Senyal sonor');
 [r, lags] = xcorr(data);
 
 % Gràfic autocorrelació Matlab
-subplot(3,1,2);
+subplot(2,1,2);
 plot(lags, r);
 xlabel('Mostres de retard');
 ylabel('Autocorrelació');
 title('Autocorrelació del segment MATLAB ');
 
 %vector data autocorr
-
-lags_pos=0:length(data_autocorr)-1;
-
+lags_pos=0:length(data_autocorr)-q
 % Gràfic autocorrelació
-subplot(3,1,3);
-plot(lags_pos, data_autocorr);
+subplot(2,1,3);
+plot(lags, data_autocorr);
 xlabel('Mostres de retard');
 ylabel('Autocorrelació');
-title('Autocorrelació del segment get pitch ');
+title('Autocorrelació del segment ');

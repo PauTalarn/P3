@@ -12,9 +12,11 @@ Ejercicios básicos
 
 - Complete el código de los ficheros necesarios para realizar la estimación de pitch usando el programa
   `get_pitch`.
+  
+  Els codis de les funcions completades està explicat en el `doxygenfile`.
 
    * Complete el cálculo de la autocorrelación e inserte a continuación el código correspondiente.
-   
+
     ```
     void PitchAnalyzer::autocorrelation(const vector<float> &x, vector<float> &r) const {
 
@@ -36,11 +38,24 @@ Ejercicios básicos
      unos 30 ms de un fonema sonoro y su periodo de pitch; y, en otro *subplot*, se vea con claridad la
 	 autocorrelación de la señal y la posición del primer máximo secundario.
 
+   A continuació es mostra el senyal temporal d'un dels primers fonemes sonors del fitxer `prueba.wav`. La segona gràfica 
+   es correspon a l'autocorrelació del segment utilitzant la funció `xcorr(data)`de MATLAB. La tercera és l'autocorrelació
+   que ha realitzat el nostra programa amb el codi anterior.
+
+
+   ![Fonema sonor](img/grafics_matlab.png)
+
 	 NOTA: es más que probable que tenga que usar Python, Octave/MATLAB u otro programa semejante para
 	 hacerlo. Se valorará la utilización de la biblioteca matplotlib de Python.
 
    * Determine el mejor candidato para el periodo de pitch localizando el primer máximo secundario de la
      autocorrelación. Inserte a continuación el código correspondiente.
+
+     En el senyal temporal observem que el període és de 3,8 ms, que es correspon a un freqüència de 263 Hz.
+     El segon màxim de l'autocorrelació és un desplaçament de 77 mostres (fm=20000), que es correspon a a una freqüència de 263 Hz.
+     ````
+     INSERTAT CODI MATLAB
+     ````
 
    * Implemente la regla de decisión sonoro o sordo e inserte el código correspondiente.
 
@@ -56,6 +71,14 @@ Ejercicios básicos
 	    principales candidatos para determinar la sonoridad de la voz: el nivel de potencia de la señal
 		(r[0]), la autocorrelación normalizada de uno (r1norm = r[1] / r[0]) y el valor de la
 		autocorrelación en su máximo secundario (rmaxnorm = r[lag] / r[0]).
+    En la imatge s'hi representen 5 gràfiques: 
+      1er: estimació del pitch del wavesurfer
+      2na: senyal temporal
+      3era: potència
+      4rta: autocorrelació en el seu màxim secundari (rmaxnorm = r[lag] / r[0])
+      5ena: autocorrelació normalitzada de un (r1norm = r[1] / r[0])
+
+      ![Gràfiques](img/pitch_pot_rlagr0_r1r0.png)
 
 		Puede considerar, también, la conveniencia de usar la tasa de cruces por cero.
 
@@ -65,6 +88,16 @@ Ejercicios básicos
       - Use el estimador de pitch implementado en el programa `wavesurfer` en una señal de prueba y compare
 	    su resultado con el obtenido por la mejor versión de su propio sistema.  Inserte una gráfica
 		ilustrativa del resultado de ambos estimadores.
+    L'evaluació del resultat del pitch del àudio prueba.wav té una avaluació del 92.20% segons el pitch_evaluate. 
+    En aquest cas estem comparant el resultat del nostra programa i l'estimació del pitch del `wavesurfer`i observem que
+    les diferències son molt poc apreciables. La primera estimació del pitch es correspon amb l'output del programa i la segona
+    gràfica és l'estimació del `wavesurfer`.
+
+
+    ![Gràfiques](img/resultatiwavesurfer.png)
+
+
+
      
 		Aunque puede usar el propio Wavesurfer para obtener la representación, se valorará
 	 	el uso de alternativas de mayor calidad (particularmente Python).
