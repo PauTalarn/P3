@@ -134,8 +134,6 @@ for (unsigned int l=1; l<f0.size()-1; l++){   // se itera desde el segundo eleme
 vect_f0.push_back(f0[f0.size()-1]);  // se agrega el último elemento de f0 al vector  vect_f0
 
 
-
-
   // Write f0 contour into the output file
   ofstream os(output_txt);
   if (!os.good()) {

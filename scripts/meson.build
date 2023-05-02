@@ -1,7 +1,7 @@
 # Scripts del proyecto
 
 scripts = [
-    'run_get_pitch.sh',
+    'run_get_pitch.sh', 'optim.sh'
 ]
 
 foreach script: scripts
