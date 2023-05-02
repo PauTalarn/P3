@@ -67,7 +67,10 @@ int main(int argc, const char *argv[]) {
   float th_pot=stof(args["--th_pot"].asString());
   //float th_pot=-43.5;
 
+
+ 
   // Read input sound file
+
   unsigned int rate;
   vector<float> x;
   if (readwav_mono(input_wav, rate, x) != 0) {
@@ -76,6 +79,7 @@ int main(int argc, const char *argv[]) {
   }
 
   int n_len = rate * FRAME_LEN;
+  cout << n_len;
   int n_shift = rate * FRAME_SHIFT;
 
   // Define analyzer

@@ -141,20 +141,19 @@ namespace upc
     // You can print these (and other) features, look at them using wavesurfer
     // Based on that, implement a rule for unvoiced
     // change to #if 1 and compile
+    //FILE *file_pot = fopen("file_pot.txt", "w+");
+    //FILE *file_r1r0 = fopen("file_r1r0.txt", "w+");
+    //FILE *file_rlagro = fopen("file_rlagro.txt", "w+");
 
-    FILE *file_pot = fopen("file_pot.txt", "w+");
-    FILE *file_r1r0 = fopen("file_r1r0.txt", "w+");
-    FILE *file_rlagro = fopen("file_rlagro.txt", "w+");
-
-    fprintf(file_pot, "%f \n", pot);
+   /* fprintf(file_pot, "%f \n", pot);
     fprintf(file_r1r0, "%f \n", r[1]/r[0]);
-    fprintf(file_rlagro, "%f \n", r[lag]/r[0]);
+    fprintf(file_rlagro, "%f \n", r[lag]/r[0]);*/
 
     
 
 #if 1
-    if (r[0] > 0.0F)
-      cout << pot << '\t' << r[1]/r[0] << '\t' << r[lag]/r[0] << endl;
+    //if (r[0] > 0.0F)
+    //cout << pot << '\t' << r[1]/r[0] << '\t' << r[lag]/r[0] << endl;
 #endif
 
     
