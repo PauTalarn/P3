@@ -76,15 +76,14 @@ namespace upc
     /// * You can use the standard features (pot, r1norm, rmaxnorm),
     ///   or compute and use other ones.
 
-    // float th_rmaxnorm=0.5;
-    // float th_r1norm=0.5;
-    // float th_pot=-43.5;
-
     /**
-    \DONE
+    \DONE rule implemented
+    Returns a boolean value. It checks if two variables are both greater than the threshold values
+    th_rmaxnorm and th_r1norm.
+    If they are, the function returns "false". If not, the function returns "true".
     */
-   //&& pot > th_pot
-    if (rmaxnorm > th_rmaxnorm && r1norm > th_r1norm)
+    //&& pot > th_pot
+    if (rmaxnorm > th_rmaxnorm && r1norm > th_r1norm && pot > th_pot)
     {
       return false;
     }
@@ -118,13 +117,13 @@ namespace upc
 
     /**
       \DONE rule implemented
-      The code calculates the lag of the maximum value of the autocorrelation function of a signal. 
-      It begins by initializing two constant iterators, iR and iRMax, to the beginning of the vector r. 
-      The for loop iterates through the elements of r from the index npitch_min to npitch_max - 1. 
-      For each iteration, it compares the current element with the value pointed by iRMax. 
-      If the current element is greater than iRMax, then iRMax is updated to point to the current element. 
+      The code calculates the lag of the maximum value of the autocorrelation function of a signal.
+      It begins by initializing two constant iterators, iR and iRMax, to the beginning of the vector r.
+      The for loop iterates through the elements of r from the index npitch_min to npitch_max - 1.
+      For each iteration, it compares the current element with the value pointed by iRMax.
+      If the current element is greater than iRMax, then iRMax is updated to point to the current element.
       At the end of the loop, the variable lag is calculated as the difference between iRMax and the beginning of r.
-      Finally, the logarithm base 10 of the first element of the r vector is computed and stored in the variable pot. 
+      Finally, the logarithm base 10 of the first element of the r vector is computed and stored in the variable pot.
       This value can be used to identify whether the segment of speech is voiced or unvoiced.
       */
     for (iR = iRMax = r.begin() + npitch_min; iR < r.begin() + npitch_max; iR++)
@@ -141,32 +140,23 @@ namespace upc
     // You can print these (and other) features, look at them using wavesurfer
     // Based on that, implement a rule for unvoiced
     // change to #if 1 and compile
-    //FILE *file_pot = fopen("file_pot.txt", "w+");
-    //FILE *file_r1r0 = fopen("file_r1r0.txt", "w+");
-    //FILE *file_rlagro = fopen("file_rlagro.txt", "w+");
 
-   /* fprintf(file_pot, "%f \n", pot);
-    fprintf(file_r1r0, "%f \n", r[1]/r[0]);
-    fprintf(file_rlagro, "%f \n", r[lag]/r[0]);*/
-
-    
-
-#if 1
-    //if (r[0] > 0.0F)
-    //cout << pot << '\t' << r[1]/r[0] << '\t' << r[lag]/r[0] << endl;
+#if 0
+    if (r[0] > 0.0F)
+    cout << pot << '\t' << r[1]/r[0] << '\t' << r[lag]/r[0] << endl;
 #endif
 
-    
-  static int cont=0;
+    static int cont = 0;
 
     if (unvoiced(pot, r[1] / r[0], r[lag] / r[0]))
       return 0;
     else
     {
-      //Guardem la trama i la seva autocorrelacio de la quarta trama SONORA
-      //També podriem guardar la primera, segona o qualsevol altre indistintament
 
-      if (cont ==4)
+      // We save the waveform and its autocorrelation of the first SOUND frame.
+      // to do de graphics
+
+      if (cont == 4)
       {
         FILE *file_voiced_x = fopen("voiced_x.txt", "w+");
         FILE *file_voiced_r = fopen("voiced_r.txt", "w+");
@@ -182,7 +172,6 @@ namespace upc
       }
       cont++;
       return (float)samplingFreq / (float)lag;
-      
     }
   }
 }

@@ -25,11 +25,11 @@ Usage:
     get_pitch --version
 
 Options:
-    -m FLOAT, --th_rmaxnorm=FLOAT  umbral de la autocorrelación a largo plazo [default: 0.4]
-    -p FLOAT, --llindarPos=FLOAT  umbral positivo central clipping [default: 0.01]
-    -n FLOAT, --llindarNeg=FLOAT  umbral negativo central clipping [default: -0.01]
-    -u FLOAT, --th_r1norm=FLOAT  umbral unvoiced [default: 0.9]
-    -w FLOAT, --th_pot=FLOAT  umbral potencia [default: -80.5]
+    -a FLOAT, --th_rmaxnorm=FLOAT threshold unvoiced [default: 0.4]
+    -p FLOAT, --llindarPos=FLOAT  positive threshold central clipping [default: 0.01]
+    -n FLOAT, --llindarNeg=FLOAT  negative threshold central clipping [default: -0.01]
+    -u FLOAT, --th_r1norm=FLOAT  threshold unvoiced [default: 0.9]
+    -w FLOAT, --th_pot=FLOAT  threshold power [default: -80.5]
     -h, --help  Show this screen
     --version   Show the version of the project
 
@@ -41,12 +41,15 @@ Arguments:
 )";
 
 int main(int argc, const char *argv[]) {
+
 	/// \TODO 
 	///  Modify the program syntax and the call to **docopt()** in order to
 	///  add options and arguments to the program.
 
   /**
-   \DONE :the user 
+   \DONE rule implemented
+    5 new inputs have been added. Those are th_rmaxnorm, llindarPos, llindarNeg, 
+    th_r1nrom, th_pot. 
   */
     std::map<std::string, docopt::value> args = docopt::docopt(USAGE,
         {argv + 1, argv + argc},	// array of arguments, without the program name
@@ -55,22 +58,13 @@ int main(int argc, const char *argv[]) {
 
 	std::string input_wav = args["<input-wav>"].asString();
 	std::string output_txt = args["<output-txt>"].asString();
+  float th_rmaxnorm=stof(args["--th_rmaxnorm"].asString());
   float llindarPos=stof(args["--llindarPos"].asString());
   float llindarNeg=stof(args["--llindarNeg"].asString());
-
-  float th_rmaxnorm=stof(args["--th_rmaxnorm"].asString());
-  //float th_rmaxnorm=0.7;
-  
   float th_r1norm=stof(args["--th_r1norm"].asString());
-  //float th_r1norm=0.7;
-
   float th_pot=stof(args["--th_pot"].asString());
-  //float th_pot=-43.5;
-
-
- 
+  
   // Read input sound file
-
   unsigned int rate;
   vector<float> x;
   if (readwav_mono(input_wav, rate, x) != 0) {
@@ -89,9 +83,13 @@ int main(int argc, const char *argv[]) {
   /// Preprocess the input signal in order to ease pitch estimation. For instance,
   /// central-clipping or low pass filtering may be used.
   
-
   /**
-   \DONE central-clipping implemented
+   \DONE rule implemented
+   central-clipping implemented
+   This technique can be useful for removing noise or artifacts that are present in the signal 
+   but are not representative of the true signal.
+   If the element is above zero, it is reduced llindaPos and then checked again to ensure it is not negative. If it is negative, its value is set to zero. 
+   If the element is below zero, it is reduced llindarNeg and then checked again to ensure it is not positive. If it is positive, its value is set to zero. 
   */
 
  for(unsigned int k=0; k<x.size();k++){
@@ -120,18 +118,26 @@ int main(int argc, const char *argv[]) {
   /// Postprocess the estimation in order to supress errors. For instance, a median filter
   /// or time-warping may be used.
 
-vector<float> vect_Med;     // se declara un vector vacío de tipo float llamado fMediana
-vector<float> vect_f0;          // se declara un vector vacío de tipo float llamado  vect_f0
-vect_f0.push_back(f0[0]);       // se agrega el primer elemento del vector f0 al vector  vect_f0
-for (unsigned int l=1; l<f0.size()-1; l++){   // se itera desde el segundo elemento de f0 hasta el penúltimo elemento de f0
-    for(int r=-1; r<2; r++){    // se itera sobre los vecinos del elemento actual de f0
-      vect_Med.push_back(f0[l+r]);   // se agrega el elemento actual de f0 y sus vecinos al vector fMediana
+  /**
+   \DONE rule implemented
+   The filter works by replacing each pixel value in an image with the median value of its neighboring pixels. 
+   The median value is calculated by sorting the neighboring pixel values and selecting the value that is in 
+   the middle of the sorted list. This technique is effective at removing impulse noise, which is a type of
+  noise that can be caused by interference or errors in the signal.
+  */
+
+vector<float> vect_Med;     
+vector<float> vect_f0;          
+vect_f0.push_back(f0[0]);       
+for (unsigned int l=1; l<f0.size()-1; l++){   
+    for(int r=-1; r<2; r++){    
+      vect_Med.push_back(f0[l+r]);   
     }
-    sort(vect_Med.begin(),vect_Med.end());   // se ordena el vector fMediana en orden ascendente
-    vect_f0.push_back(vect_Med[1]);    // se agrega el elemento central del vector fMediana al vector  vect_f0 como la mediana de los tres elementos
-    vect_Med.clear();    // se borran los elementos de fMediana para la siguiente iteración
+    sort(vect_Med.begin(),vect_Med.end());   
+    vect_f0.push_back(vect_Med[1]);    
+    vect_Med.clear();    
   }
-vect_f0.push_back(f0[f0.size()-1]);  // se agrega el último elemento de f0 al vector  vect_f0
+vect_f0.push_back(f0[f0.size()-1]);  
 
 
   // Write f0 contour into the output file
@@ -149,6 +155,3 @@ vect_f0.push_back(f0[f0.size()-1]);  // se agrega el último elemento de f0 al v
   return 0;
 }
 
-
-
-//casa
