@@ -53,11 +53,59 @@ Ejercicios básicos
 
      En el senyal temporal observem que el període és de 3,8 ms, que es correspon a un freqüència de 263 Hz.
      El segon màxim de l'autocorrelació és un desplaçament de 77 mostres (fm=20000), que es correspon a a una freqüència de 263 Hz.
-     ````
-     INSERTAT CODI MATLAB
-     ````
+      ```
+      % Llegim l'arxiu voiced_x.txt
+      filename = 'voiced_x.txt';
+      data = dlmread(filename);
+
+      filename2 = 'voiced_r.txt';
+      data_autocorr = dlmread(filename2);
+
+      % Definim la freqüència de mostreig
+      fs = 20000;
+
+      % Vector temps
+      t = ((0:length(data)-1)/fs)*1000;
+
+      % Senyal temporal
+      subplot(3,1,1);
+      plot(t, data);
+      xlabel('Temps (ms)');
+      ylabel('Amplitud');
+      title('Senyal sonor');
+
+      % Autocorrelació
+      [r, lags] = xcorr(data);
+
+      % Gràfic autocorrelació Matlab
+      subplot(3,1,2);
+      plot(lags, r);
+      xlabel('Mostres de retard');
+      ylabel('Autocorrelació');
+      title('Autocorrelació del segment MATLAB ');
+
+      %vector data autocorr
+
+      lags_pos=0:length(data_autocorr)-1;
+
+      % Gràfic autocorrelació
+      subplot(3,1,3);
+      plot(lags_pos, data_autocorr);
+      xlabel('Mostres de retard');
+      ylabel('Autocorrelació');
+      title('Autocorrelació del segment get pitch ');
+     ```
 
    * Implemente la regla de decisión sonoro o sordo e inserte el código correspondiente.
+
+   ```
+    if (rmaxnorm > th_rmaxnorm && r1norm > th_r1norm && pot > th_pot)
+        {
+          return false;
+        }
+
+        return true;
+  ```
 
    * Puede serle útil seguir las instrucciones contenidas en el documento adjunto `código.pdf`.
 
@@ -222,6 +270,7 @@ Malgrat aquest fet, el fet d'aplicar la finestra de Hamming no modifica en absol
 ![amb_hamming -h ](img/Amb_central_clipping.png)
 ![sense_hamming -h ](img/Amb_central_clipping.png)
 
+
 Hem deixat però al codi la implementació d'aquest ja que forma part del procès experimental.
 
 **Recerca dels umbrals òptims**
@@ -243,6 +292,11 @@ done | sort -t: -k 2n;
 exit 0
 
 ````
+
+Tenint en consideració tots els resultat obtinguts i amb els valor òptims trobats podem afirmar que a millor estimació del pitch ens dona:
+
+![final -h ](img/final.png)
+
 
 Evaluación *ciega* del estimador
 -------------------------------
