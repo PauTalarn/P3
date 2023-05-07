@@ -217,7 +217,7 @@ En primer lloc s'ha implementat un central-clipping per tal d'eliminar soroll a 
   ```
 
 ![sense_central_clipping -h ](img/Sense_Central_Clipping.png)
-![amb_central_clipping -h ](img/Amb_Central_Clipping.png)
+![amb_central_clipping -h ](img/Amb_Central_clipping.png)
 
  Podem observar com en el primer cas tenim una senyal  on no s'ha aplicat el central clipping i en el segon cas sí que s'ha aplicat amb els valors: 0.0052  i -0.0156. És observable com treure soroll de fons amb els paràmetres adecuats produeix una millora important.
 
@@ -240,7 +240,7 @@ vect_f0.push_back(f0[f0.size()-1]); // s'afegeix l'últim element de f0 al vecto
 ````
 A continuació es podrà obsevrar la millora important de posar o no el postprocessat:
 
-![sense_processat -h ](img/Amb_Mitjana.png)
+![sense_processat -h ](img/Amb_mitjana.png)
 ![amb_processat -h ](img/Sense_Mitjana.png)
 
 
