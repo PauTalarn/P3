@@ -119,8 +119,22 @@ Ejercicios de ampliación
   * Inserte un *pantallazo* en el que se vea el mensaje de ayuda del programa y un ejemplo de utilización
     con los argumentos añadidos.
 
-  ![get_pitch -h ](img/help.png)
+  ![get_pitch -h ](img/get_pitch.png)
 
+  Podem observar que s'han afegit diferents paràmetres per tal que l'usuari pugui modificar per teclat i trobar el valor òptim.
+
+  Per una banda, tenim en primer lloc un conjunt d'umbrals que ens ajuden a decidir si la trama que estem revent és sonora o no per tal de buscar-li el pitch o no:
+
+  * -m th_rmaxnorm --> Si r[log]/r[0] és més gran que el llindar establert , podem determinar que la senyal és periòdica i, petr tant, sonora.
+
+  * -u th_r1norm --> Si r[1]/r[0] és més gran que el llindar establert  també es pot identificar la trama com a sonora.
+
+  * -w th_pot --> A més a a més una trama sonora té una potència suficient gran i major que la que ens marca el llindar.
+
+ Pot ser que hi hagi alguna excepció en aquestes condicions i, per tant, si no s'acompleixen totes, podrem afirmar que el so no és sonor.
+
+  A més a més, s'ha implementat un preprocessat center-clipping. Per tant, cal posar uns umbrals on "retallar la senyal". Aquests venen donats per l'usuari a -p (llindarPos) i -n (llindarNeg).
+  
 - Implemente las técnicas que considere oportunas para optimizar las prestaciones del sistema de estimación
   de pitch.
 
@@ -134,19 +148,101 @@ Ejercicios de ampliación
     gobiernan la decisión sonoro/sordo.
   * Cualquier otra técnica que se le pueda ocurrir o encuentre en la literatura.
 
-    S'ha implementat la tècnica de prepocessat *center clipping*. 
+   Per tal de poder estimar el pitch i obtenir un millor resultat s'ha realitzat diferents tècniques de preproccessat, processat i postprocessat. 
 
-  Encontrará más información acerca de estas técnicas en las [Transparencias del Curso](https://atenea.upc.edu/pluginfile.php/2908770/mod_resource/content/3/2b_PS%20Techniques.pdf)
-  y en [Spoken Language Processing](https://discovery.upc.edu/iii/encore/record/C__Rb1233593?lang=cat).
-  También encontrará más información en los anexos del enunciado de esta práctica.
+**Preprocessat**
 
-  Incluya, a continuación, una explicación de las técnicas incorporadas al estimador. Se valorará la
-  inclusión de gráficas, tablas, código o cualquier otra cosa que ayude a comprender el trabajo realizado.
+En primer lloc s'ha implementat un central-clipping per tal d'eliminar soroll a petita escala que pugui aparèixer a la senyal. S'ha implementat a partir dels paràmetres passats per l'usuari (llindarPos i llindarNeg).   
+```
+ for(unsigned int k=0; k<x.size();k++){ //Anem des de 0 fins al tamany de la funció x
+    if(x[k]>0){ //Si l'element en la posició k és més gran que 0
+      x[k]=x[k]-llindarPos; //Li treiem a la funció llindarPos per aplicar el central-clipping
+      if(x[k]<0){ // Si el resultat de la resta és més petit que 0 pose el nou valor a 0
+        x[k]=0;
+      }
+    } else { //Apliquem el mateix que abans però per números positius
+      x[k]=x[k]-llindarNeg;
+      if(x[k]>0){
+        x[k]=0;
+      }
+    }
+  }
+  ```
 
-  También se valorará la realización de un estudio de los parámetros involucrados. Por ejemplo, si se opta
-  por implementar el filtro de mediana, se valorará el análisis de los resultados obtenidos en función de
-  la longitud del filtro.
-   
+![sense_central_clipping -h ](img/Sense_central_clipping.png)
+![amb_central_clipping -h ](img/Amb_central_clipping.png)
+
+ Podem observar com en el primer cas tenim una senyal  on no s'ha aplicat el central clipping i en el segon cas sí que s'ha aplicat amb els valors: 0.0052  i -0.0156. És observable com treure soroll de fons amb els paràmetres adecuats produeix una millora important.
+
+**Postptocessat**
+
+A més a més s'ha aplicat una tècnica de postptocessat aplicant la tècnica de la mitjana. Aquesta tècnica és molt important per evitar salts de pitch estranys i evitar la duplicació i reducció a la mitad de falses deteccions. El sistema intenta estimar la mostra a partir de les mostes veïnes del punt en què estem agafant un valor intermig. En aquest cas estem agafant un vector en què s'analitza la mostra anterior a l'actual i dos més de superiors per tal d'aplicar el filtre de mijana. El codi és el següent:
+````
+vector<float> vect_Med;  // es declara un vector buit de tipus float anomenat vect_Med
+vector<float> vect_f0;   // es declara un vector buit de tipus float anomenat vect_f0
+vect_f0.push_back(f0[0]); // s'afegeix el primer element del vector f0 al vector vect_f0   
+for (unsigned int l=1; l<f0.size()-1; l++){  // es recorre des del segon element fins al penúltim element del vector f0
+    for(int r=-1; r<2; r++){  // es recorre els veïns de l'element actual de f0
+      vect_Med.push_back(f0[l+r]);  // s'afegeix l'element actual de f0 i els seus veïns al vector vect_Med
+    sort(vect_Med.begin(),vect_Med.end());  // s'ordena el vector vect_Med en ordre ascendent
+    vect_f0.push_back(vect_Med[1]); // s'agafa l'element 1 del vect_Med al vector vect_f0 com la mitjana dels tres elements
+    vect_Med.clear(); // es netegen els elements del vector vect_Med per a la següent iteració
+  }
+vect_f0.push_back(f0[f0.size()-1]); // s'afegeix l'últim element de f0 al vector vect_f0
+
+````
+A continuació es podrà obsevrar la millora important de posar o no el postprocessat:
+
+![sense_processat -h ](img/Amb_Mitjana.png)
+![amb_processat -h ](img/Sense_Mitjana.png)
+
+
+**Hamming**
+
+A més a més, s'ha canviat el tipus de finestra permetent que l'usuari pugui triar si realitzar-ho amb Hamming o amb una finestra recta. Podem observar com s'utlitza la fórmula de la finestra de Hamming i com, depenent del paràmetre que l'usuari vulgui passar s'aplica Hamming o la finestra ja donada. Per tal d'implementar aquesta funció s'ha aplicat:
+
+```
+ window.resize(frameLen);
+
+    switch (win_type)
+    {
+    case HAMMING:
+      for (unsigned int n = 0; n < frameLen; n++)
+      {
+        window[n] = 0.53836 - (0.46164 * (cos((2 * 3.1416 * n) / (frameLen - 1))));
+      }
+
+      break;
+    case RECT:
+    default:
+      window.assign(frameLen, 1);
+  ```
+Malgrat aquest fet, el fet d'aplicar la finestra de Hamming no modifica en absolut el resultat final:
+
+![amb_hamming -h ](img/Amb_central_clipping.png)
+![sense_hamming -h ](img/Amb_central_clipping.png)
+
+Hem deixat però al codi la implementació d'aquest ja que forma part del procès experimental.
+
+**Recerca dels umbrals òptims**
+
+Finalment, també s'ha aplicat un optimitzador d'ubmrals de manera que es puiguin millorar al màxim les prestacions dels umbrals establerts. Dins del fitxer optim.sh hem creat diferents bucles amb diferents rangs de valors (uns per cada llindar a estudiar) i es fa la comparació (run_get_pitch) a cada iteració fins trobar el millors valors de cada paràmetre que passa l'usuari. 
+
+```
+for th_rmaxnorm in $(seq 0.354 0.001 0.356); do
+    for llindarPos in $(seq 0.0051 0.0001 0.0055 ); do
+        for llindarNeg in $(seq -0.0154 -0.0001 -0.0157 ); do
+            for th_r1norm in $(seq 0.691 0.001 0.695 ); do
+                    echo -n "th_rmaxnorm=$th_rmaxnorm llindarPos=$llindarPos llindarNeg=$llindarNeg th_r1norm=$th_r1norm th_pot=-66"
+                    scripts/run_get_pitch.sh $th_rmaxnorm $llindarPos $llindarNeg $th_r1norm -66  > /dev/null
+                    pitch_evaluate pitch_db/train/*.f0ref | fgrep TOTAL   
+            done
+        done 
+    done
+done | sort -t: -k 2n;
+exit 0
+
+````
 
 Evaluación *ciega* del estimador
 -------------------------------
