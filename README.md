@@ -13,8 +13,7 @@ Ejercicios básicos
 - Complete el código de los ficheros necesarios para realizar la estimación de pitch usando el programa
   `get_pitch`.
   
-  Els codis de les funcions completades està explicat en el `doxygenfile`.
-
+ma
    * Complete el cálculo de la autocorrelación e inserte a continuación el código correspondiente.
 
     ```
