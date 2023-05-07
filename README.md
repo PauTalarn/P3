@@ -216,8 +216,8 @@ En primer lloc s'ha implementat un central-clipping per tal d'eliminar soroll a 
   }
   ```
 
-![sense_central_clipping -h ](img/Sense_central_clipping.png)
-![amb_central_clipping -h ](img/Amb_central_clipping.png)
+![sense_central_clipping -h ](img/Sense_Central_Clipping.png)
+![amb_central_clipping -h ](img/Amb_Central_Clipping.png)
 
  Podem observar com en el primer cas tenim una senyal  on no s'ha aplicat el central clipping i en el segon cas sí que s'ha aplicat amb els valors: 0.0052  i -0.0156. És observable com treure soroll de fons amb els paràmetres adecuats produeix una millora important.
 
@@ -266,8 +266,8 @@ A més a més, s'ha canviat el tipus de finestra permetent que l'usuari pugui tr
   ```
 Malgrat aquest fet, el fet d'aplicar la finestra de Hamming no modifica en absolut el resultat final:
 
-![amb_hamming -h ](img/Amb_central_clipping.png)
-![sense_hamming -h ](img/Amb_central_clipping.png)
+![amb_hamming -h ](img/Amb_Central_clipping.png)
+![sense_hamming -h ](img/Amb_Central_clipping.png)
 
 
 Hem deixat però al codi la implementació d'aquest ja que forma part del procès experimental.
